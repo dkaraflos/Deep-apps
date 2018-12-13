@@ -1,0 +1,21 @@
+def score_tour(tour):
+    df = cities.reindex(tour + [0]).reset_index()
+    primes = list(sympy.primerange(0, len(cities)))
+    df['prime'] = df.CityId.isin(primes).astype(int)
+    df['dist'] = np.hypot(df.X - df.X.shift(-1), df.Y - df.Y.shift(-1))
+    df['penalty'] = df['dist'][9::10] * (1 - df['prime'][9::10]) * 0.1
+
+    #Chippy's hint
+    sum_dist = df['dist'].sum()
+    s= sum_dist + df['penalty'].sum()
+    df = df.iloc[::-1]
+    df['penalty'] = df['dist'][9::10] * (1 - df['prime'][9::10]) * 0.1
+    
+    r= sum_dist + df['penalty'].sum()
+    rev = False
+    if r < s:
+        rev = True
+        s = r
+
+    return s , rev
+	
